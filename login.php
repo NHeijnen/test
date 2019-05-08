@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 require_once 'config.php';
 ?>
 <!DOCTYPE html>
@@ -16,7 +16,7 @@ require_once 'config.php';
 
 .titel {
     text-align: center;
-    
+
 }
 
 .column {
@@ -69,17 +69,17 @@ require_once 'config.php';
      <div class="titel">
          <img src="images/flowerpower.jpg" width="80" height="80">
     </div>
-  
-  
+
+
   <div class="titel">
     <h1> FlowerPower </h1>
     Ingelogd als:
     <div style="padding-left: 5px; padding-top: 5px;"><?php if(isset($_SESSION['gebruikersnaam'])) { echo $_SESSION['gebruikersnaam'];} else { echo "niet ingelogd"; } ?><?php if(isset($_SESSION['gebruikersnaammed'])) { echo $_SESSION['gebruikersnaammed'];} ?></div>
   </div>
- 
-  
+
+
 </div>
-    
+
 <div class="clearfix">
   <div class="column menu">
     <ul>
@@ -95,7 +95,7 @@ require_once 'config.php';
         ?>
         <li><a href="account.php">Account</a></li>
         <li><a href="logout.php">Uitloggen</a></li>
-        
+
         <?php
         endif;
         ?>
@@ -109,7 +109,7 @@ require_once 'config.php';
         <li><a href="overzichtartikelen.php">Overzicht artikelen</a></li>
         <li><a href="account.php">Account</a></li>
         <li><a href="logout.php">Uitloggen</a></li>
-        
+
         <?php
         endif;
         ?>
@@ -127,12 +127,12 @@ require_once 'config.php';
 require('db.php');
 
 if (isset($_POST['gebruikersnaam'])){
-    
+
 	$gebruikersnaam = stripslashes($_REQUEST['gebruikersnaam']);
 	$gebruikersnaam = mysqli_real_escape_string($con,$gebruikersnaam);
 	$wachtwoord = stripslashes($_REQUEST['wachtwoord']);
 	$wachtwoord = mysqli_real_escape_string($con,$wachtwoord);
-	
+
         $query = "SELECT * FROM klant WHERE gebruikersnaam='$gebruikersnaam'
 and wachtwoord='".md5($wachtwoord)."'";
 	$result = mysqli_query($con,$query) or die(mysql_error());
@@ -164,4 +164,63 @@ and wachtwoord='".md5($wachtwoord)."'";
 </div>
 
 </body>
-</html>
+</html> -->
+
+
+
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = False;
+$dbname = "kanker";
+
+// Create connection
+$con = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
+}
+session_start();
+$gebruikernaam = $_REQUEST['gebruikernaam'];
+$wachtwoord = $_REQUEST['wachtwoord'];
+
+$select = "SELECT * FROM klant WHERE gebruikernaam = '$gebruikernaam' and wachtwoord='$wachtwoord'";
+
+$result = mysqli_query($con,$select) or die(mysql_error());
+	$rows = mysqli_num_rows($result);
+        if($rows==1){
+	    $_SESSION['gebruikernaam'] = $gebruikernaam;
+            // Redirect user to index.php
+	    header("Location: register.php");
+         }else{
+	echo "<div class='form'>
+<h3>Gebruikersnaam/Wachtwoord is onjuist.</h3>
+<br/>Klik hier om in te loggen <a href='login.php'>Login</a></div>";
+	}
+?>
+
+
+
+<?php
+        if(!isset($_SESSION['gebruikernaam'])) : //check of er is ingelogd
+      ?>
+        <form action="kankersignup.php" method="POST">
+            <!--<input type="hidden" name="action" value="klant">-->
+            <input type="text" name="gebruikernaam" placeholder="username"><br><br>
+            <input type="password" name="wachtwoord" placeholder="password"><br><br>
+            <button type="submit" value="Submit">hiero</button>
+        </form>
+
+        <li><a href="login.php">Inloggen klanten</a></li>
+        <li><a href="loginmedewerkers.php">Inloggen medewerkers</a></li>
+        <?php
+        else:
+        ?>
+        <li><a href="account.php">Account</a></li>
+        <li><a href="logout.php">Uitloggen</a></li>
+
+        <?php
+        endif;
+        ?>
